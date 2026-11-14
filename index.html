@@ -1173,6 +1173,31 @@
       renderBadgeSelector();
       switchTab('studio');
     }
+
+    async function deleteCard(cardId) {
+      cards = cards.filter((c) => c.id !== cardId);
+      await persistCardsToStorage();
+      closeDetailModal();
+      renderBinder();
+      showToast('카드가 삭제되었습니다.');
+    }
+
+    function openBackupModal() {
+      document.getElementById('backup-modal').classList.remove('hidden');
+    }
+
+    function closeBackupModal() {
+      document.getElementById('backup-modal').classList.add('hidden');
+    }
+
+    function exportCardsJSON() {
+      const dataStr = JSON.stringify(cards, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `TABLE_NOTE_backup_${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
       URL.revokeObjectURL(url);
       showToast('💾 백업 파일이 다운로드되었습니다.');
     }
@@ -1218,26 +1243,3 @@
   </script>
 </body>
 </html>
-    async function deleteCard(cardId) {
-      cards = cards.filter((c) => c.id !== cardId);
-      await persistCardsToStorage();
-      closeDetailModal();
-      renderBinder();
-      showToast('카드가 삭제되었습니다.');
-    }
-
-    function openBackupModal() {
-      document.getElementById('backup-modal').classList.remove('hidden');
-    }
-    function closeBackupModal() {
-      document.getElementById('backup-modal').classList.add('hidden');
-    }
-
-    function exportCardsJSON() {
-      const dataStr = JSON.stringify(cards, null, 2);
-      const blob = new Blob([dataStr], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `TABLE_NOTE_backup_${new Date().toISOString().slice(0, 10)}.json`;
-      a.click();
